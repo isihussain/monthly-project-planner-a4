@@ -4,704 +4,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Aylık Proje ve Takvim Planlayıcı (A4 Print Planner)</title>
-  <style>
-    /* =========================================================
-       GENEL VE EKRAN AYARLARI
-       ========================================================= */
-    :root {
-      --ink-black: #000000;
-      --ink-dark: #222222;
-      --ink-mid: #666666;
-      --ink-light: #cccccc;
-      --ink-ultralight: #eeeeee;
-      --line-rule: #bbbbbb;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: #e5e7eb;
-      color: var(--ink-black);
-      line-height: 1.25;
-      font-size: 11px;
-    }
-
-    /* Üst Kontrol Paneli (Yalnızca ekranda görünür) */
-    .toolbar {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: #ffffff;
-      border-bottom: 2px solid #000000;
-      padding: 10px 18px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .toolbar-left, .toolbar-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .toolbar-title {
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      color: #000;
-      margin-right: 4px;
-    }
-
-    .lang-switcher {
-      display: inline-flex;
-      border: 1.5px solid #000000;
-      border-radius: 4px;
-      overflow: hidden;
-      margin-right: 6px;
-    }
-
-    .lang-btn {
-      background: #ffffff;
-      color: #000000;
-      border: none;
-      border-right: 1px solid #000000;
-      padding: 5px 9px;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .lang-btn:last-child {
-      border-right: none;
-    }
-
-    .lang-btn:hover {
-      background: #eee;
-    }
-
-    .lang-btn.active {
-      background: #000000;
-      color: #ffffff;
-    }
-
-    .btn {
-      background: #ffffff;
-      color: #000000;
-      border: 1.5px solid #000000;
-      padding: 5px 12px;
-      font-size: 11.5px;
-      font-weight: 600;
-      cursor: pointer;
-      border-radius: 4px;
-      transition: all 0.15s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .btn:hover {
-      background: #000000;
-      color: #ffffff;
-    }
-
-    .btn.active {
-      background: #000000;
-      color: #ffffff;
-    }
-
-    .btn-print {
-      background: #000000;
-      color: #ffffff;
-      font-weight: 700;
-    }
-
-    .btn-print:hover {
-      background: #333333;
-    }
-
-    .select-input {
-      padding: 4.5px 7px;
-      font-size: 11.5px;
-      border: 1.5px solid #000000;
-      border-radius: 4px;
-      background: #ffffff;
-      font-weight: 600;
-    }
-
-    .sheet-wrapper {
-      display: flex;
-      justify-content: center;
-      padding: 24px 10px 60px 10px;
-    }
-
-    /* =========================================================
-       A4 SAYFA YÖNETİMİ
-       ========================================================= */
-    .a4-sheet {
-      background: #ffffff;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-      position: relative;
-      overflow: hidden;
-      color: var(--ink-black);
-    }
-
-    /* Dikey (Portrait) */
-    .a4-sheet.portrait {
-      width: 210mm;
-      height: 297mm;
-      max-height: 297mm;
-      padding: 7.5mm 8.5mm;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    /* Yatay (Landscape) */
-    .a4-sheet.landscape {
-      width: 297mm;
-      height: 210mm;
-      max-height: 210mm;
-      padding: 6.5mm 7.5mm;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    /* =========================================================
-       ORTAK TİPOGRAFİ VE YAPILAR
-       ========================================================= */
-    .section-title {
-      font-size: 9.5px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      border-bottom: 1.5px solid var(--ink-black);
-      padding-bottom: 2px;
-      margin-bottom: 4px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .section-tag {
-      font-size: 7.5px;
-      font-weight: 700;
-      border: 1px solid var(--ink-black);
-      padding: 0 4px;
-      border-radius: 2px;
-      text-transform: uppercase;
-    }
-
-    [contenteditable="true"] {
-      outline: none;
-      cursor: text;
-    }
-
-    [contenteditable="true"]:hover {
-      background-color: rgba(0, 0, 0, 0.02);
-    }
-
-    .chk {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      border: 1.2px solid var(--ink-black);
-      border-radius: 1px;
-      margin-right: 4px;
-      vertical-align: middle;
-      flex-shrink: 0;
-      cursor: pointer;
-      position: relative;
-      user-select: none;
-    }
-
-    .chk.checked::after {
-      content: "✓";
-      position: absolute;
-      top: -4px;
-      left: 1px;
-      font-size: 10px;
-      font-weight: 900;
-      line-height: 1;
-      color: var(--ink-black);
-    }
-
-    .circle-chk {
-      display: inline-block;
-      width: 9px;
-      height: 9px;
-      border: 1.2px solid var(--ink-black);
-      border-radius: 50%;
-      margin-right: 3px;
-      vertical-align: middle;
-      flex-shrink: 0;
-      cursor: pointer;
-      position: relative;
-      user-select: none;
-    }
-
-    .circle-chk.checked {
-      background-color: var(--ink-black);
-    }
-
-    /* Toast Notification */
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: #111827;
-      color: #ffffff;
-      padding: 10px 18px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      z-index: 1000;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      opacity: 0;
-      transform: translateY(10px);
-      pointer-events: none;
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    @media print {
-      .toast {
-        display: none !important;
-      }
-    }
-
-    /* =========================================================
-       DİKEY (PORTRAIT) YERLEŞİM DÜZENİ
-       ========================================================= */
-    .portrait .header-bar {
-      display: grid;
-      grid-template-columns: 1.3fr 1fr;
-      align-items: end;
-      border-bottom: 2px solid var(--ink-black);
-      padding-bottom: 4px;
-      margin-bottom: 5px;
-    }
-
-    .portrait .main-title {
-      font-size: 15px;
-      font-weight: 900;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      line-height: 1.1;
-    }
-
-    .portrait .sub-title {
-      font-size: 8px;
-      font-weight: 600;
-      letter-spacing: 0.4px;
-      color: var(--ink-mid);
-      margin-top: 2px;
-    }
-
-    .portrait .header-meta {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      font-size: 10.5px;
-      font-weight: 700;
-    }
-
-    .portrait .meta-box {
-      border: 1.5px solid var(--ink-black);
-      padding: 2px 7px;
-      border-radius: 3px;
-      min-width: 75px;
-      text-align: center;
-    }
-
-    /* Ana Odak Satırı */
-    .portrait .focus-strip {
-      border: 1.2px solid var(--ink-black);
-      background-color: #fafafa;
-      padding: 3px 6px;
-      margin-bottom: 5px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 9px;
-    }
-
-    .focus-label {
-      font-weight: 800;
-      white-space: nowrap;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-    }
-
-    .focus-text {
-      flex: 1;
-      border-bottom: 1px dotted var(--ink-mid);
-      min-height: 13px;
-      font-weight: 600;
-    }
-
-    /* Takvim Alanı (Dikey) */
-    .portrait .calendar-section {
-      margin-bottom: 5px;
-    }
-
-    .portrait .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      border-top: 1.5px solid var(--ink-black);
-      border-left: 1.5px solid var(--ink-black);
-    }
-
-    .cal-day-header {
-      font-size: 8px;
-      font-weight: 800;
-      text-align: center;
-      padding: 2px 0;
-      border-right: 1px solid var(--ink-black);
-      border-bottom: 1.5px solid var(--ink-black);
-      background: #f4f4f4;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-    }
-
-    .cal-day-header.weekend {
-      background: #e9e9e9;
-    }
-
-    .portrait .cal-cell {
-      border-right: 1px solid var(--ink-black);
-      border-bottom: 1px solid var(--ink-black);
-      height: 17.5mm;
-      padding: 2px 3px;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-    }
-
-    .portrait .cal-cell.weekend {
-      background: #fafafa;
-    }
-
-    .cal-cell-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1px;
-    }
-
-    .cal-date-badge {
-      font-size: 8.5px;
-      font-weight: 800;
-      min-width: 13px;
-      height: 13px;
-      line-height: 12px;
-      text-align: center;
-      border: 1px solid var(--ink-black);
-      border-radius: 50%;
-      display: inline-block;
-    }
-
-    .cal-cell-lines {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
-      gap: 1px;
-    }
-
-    .cal-note-line {
-      border-bottom: 1px dotted #ccc;
-      height: 4px;
-      font-size: 7.5px;
-      line-height: 8px;
-      overflow: hidden;
-      white-space: nowrap;
-    }
-
-    /* Dikey İki Sütunlu Alt Gövde */
-    .portrait .projects-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 7mm;
-      flex: 1;
-      min-height: 0;
-    }
-
-    /* Sol Sütun: Şimdiki Projeler */
-    .current-projects-col {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .project-card {
-      border: 1.2px solid var(--ink-black);
-      border-radius: 3px;
-      padding: 3.5px 5px;
-      margin-bottom: 4px;
-      background: #fff;
-    }
-
-    .project-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 800;
-      font-size: 9.5px;
-      border-bottom: 1px solid var(--ink-light);
-      padding-bottom: 2px;
-      margin-bottom: 2.5px;
-    }
-
-    .project-name {
-      display: flex;
-      align-items: center;
-      flex: 1;
-      gap: 3px;
-    }
-
-    .project-deadline {
-      font-size: 7.5px;
-      font-weight: 700;
-      border: 1px solid var(--ink-black);
-      padding: 0 3px;
-      border-radius: 2px;
-      white-space: nowrap;
-    }
-
-    .project-tasks {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      margin-bottom: 2.5px;
-    }
-
-    .task-item {
-      display: flex;
-      align-items: center;
-      font-size: 8.5px;
-    }
-
-    .task-text {
-      flex: 1;
-      border-bottom: 1px dotted var(--line-rule);
-      min-height: 11px;
-      line-height: 11px;
-    }
-
-    .project-status-bar {
-      display: flex;
-      justify-content: space-between;
-      font-size: 7.5px;
-      font-weight: 600;
-      color: var(--ink-mid);
-      border-top: 1px dashed var(--ink-light);
-      padding-top: 2px;
-      margin-top: 1px;
-    }
-
-    .status-opt {
-      display: flex;
-      align-items: center;
-    }
-
-    /* Sağ Sütun: Gelecek Projeler & Notlar */
-    .future-projects-col {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .future-card {
-      border: 1.2px dashed var(--ink-black);
-      border-radius: 3px;
-      padding: 3px 5px;
-      margin-bottom: 3.5px;
-      background: #fff;
-    }
-
-    .future-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 9px;
-      font-weight: 800;
-      margin-bottom: 1.5px;
-    }
-
-    .future-meta {
-      display: flex;
-      justify-content: space-between;
-      font-size: 7.5px;
-      color: var(--ink-mid);
-      margin-top: 1px;
-    }
-
-    .notes-box {
-      border: 1.2px solid var(--ink-black);
-      border-radius: 3px;
-      padding: 4px 6px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      margin-top: 2px;
-    }
-
-    .note-row {
-      display: flex;
-      align-items: center;
-      font-size: 8.5px;
-      margin-bottom: 3px;
-    }
-
-    .note-line {
-      flex: 1;
-      border-bottom: 1px dotted var(--line-rule);
-      min-height: 12px;
-    }
-
-    /* =========================================================
-       YATAY (LANDSCAPE) YERLEŞİM DÜZENİ
-       ========================================================= */
-    .landscape .layout-grid {
-      display: grid;
-      grid-template-columns: 1.25fr 1fr;
-      gap: 6.5mm;
-      height: 100%;
-    }
-
-    .landscape-left {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-
-    .landscape-right {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      justify-content: space-between;
-    }
-
-    .landscape .header-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      border-bottom: 2px solid var(--ink-black);
-      padding-bottom: 3px;
-      margin-bottom: 3px;
-    }
-
-    .landscape .main-title {
-      font-size: 14px;
-      font-weight: 900;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-    }
-
-    .landscape .cal-cell {
-      border-right: 1px solid var(--ink-black);
-      border-bottom: 1px solid var(--ink-black);
-      height: 27.5mm;
-      padding: 2px 3px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .landscape .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      border-top: 1.5px solid var(--ink-black);
-      border-left: 1.5px solid var(--ink-black);
-      flex: 1;
-    }
-
-    /* =========================================================
-       YAZDIRMA (PRINT) ÖZEL STİLLERİ
-       ========================================================= */
-    @media print {
-      html, body {
-        background: #ffffff !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        width: 100% !important;
-        height: 100% !important;
-      }
-
-      .toolbar {
-        display: none !important;
-      }
-
-      .sheet-wrapper {
-        padding: 0 !important;
-        margin: 0 !important;
-        display: block !important;
-      }
-
-      .a4-sheet {
-        box-shadow: none !important;
-        margin: 0 !important;
-        page-break-after: avoid !important;
-        page-break-inside: avoid !important;
-      }
-
-      .a4-sheet.portrait {
-        width: 100% !important;
-        height: 279mm !important;
-        max-height: 279mm !important;
-        padding: 0 !important;
-        overflow: hidden !important;
-      }
-
-      .a4-sheet.landscape {
-        width: 100% !important;
-        height: 194mm !important;
-        max-height: 194mm !important;
-        padding: 0 !important;
-        overflow: hidden !important;
-      }
-    }
-
-    @page {
-      size: A4 portrait;
-      margin: 8mm 9mm;
-    }
-  </style>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-  <!-- KONTROL ÇUBUĞU (Yalnızca ekranda görünür, baskıda çıkmaz) -->
-  <div class="toolbar">
+  <!-- KONTROL ÇUBUĞU (Yalnızca ekranda görünür, baskıda gizlenir) -->
+  <header class="toolbar">
     <div class="toolbar-left">
       <span class="toolbar-title" id="tTitle">A4 Planlayıcı</span>
       
-      <!-- DİL SEÇİCİ -->
-      <div class="lang-switcher">
+      <!-- Dil Seçici -->
+      <nav class="lang-switcher" aria-label="Language Selector">
         <button class="lang-btn active" id="lang-tr" onclick="setLanguage('tr')">TR</button>
         <button class="lang-btn" id="lang-en" onclick="setLanguage('en')">EN</button>
         <button class="lang-btn" id="lang-de" onclick="setLanguage('de')">DE</button>
         <button class="lang-btn" id="lang-ru" onclick="setLanguage('ru')">RU</button>
         <button class="lang-btn" id="lang-az" onclick="setLanguage('az')">AZ</button>
-      </div>
+      </nav>
 
+      <!-- Görünüm Seçici -->
       <button class="btn active" id="btnPortrait" onclick="switchOrientation('portrait')">
         <span>📄</span> <span id="lblPortrait">Dikey (Portrait)</span>
       </button>
@@ -709,15 +30,18 @@
         <span>📑</span> <span id="lblLandscape">Yatay (Landscape)</span>
       </button>
 
-      <label style="font-weight: 700; margin-left: 6px;" id="lblPeriod">Dönem:</label>
-      <button class="btn" style="padding: 4px 8px; font-weight: bold;" id="btnPrevMonth" onclick="changeMonth(-1)" title="Önceki Ay">◀</button>
-      <select id="monthSelect" class="select-input" onchange="updateCalendarDates()"></select>
-      <select id="yearSelect" class="select-input" onchange="updateCalendarDates()">
+      <!-- Ay ve Yıl Gezintisi -->
+      <label style="font-weight: 700; margin-left: 4px;" id="lblPeriod">Dönem:</label>
+      <button class="btn nav-arrow-btn" id="btnPrevMonth" onclick="changeMonth(-1)" title="Önceki Ay">◀</button>
+      <select id="monthSelect" class="select-input"></select>
+      <select id="yearSelect" class="select-input">
+        <option value="2025">2025</option>
         <option value="2026" selected>2026</option>
         <option value="2027">2027</option>
         <option value="2028">2028</option>
+        <option value="2029">2029</option>
       </select>
-      <button class="btn" style="padding: 4px 8px; font-weight: bold;" id="btnNextMonth" onclick="changeMonth(1)" title="Sonraki Ay">▶</button>
+      <button class="btn nav-arrow-btn" id="btnNextMonth" onclick="changeMonth(1)" title="Sonraki Ay">▶</button>
 
       <button class="btn" onclick="clearNumbers()">
         <span>✏️</span> <span id="lblClearNumbers">Tarihleri Temizle</span>
@@ -735,6 +59,7 @@
         <span>⬆️</span> <span id="lblImport">İçe Aktar</span>
       </button>
       <input type="file" id="jsonFileInput" accept=".json" style="display:none" onchange="handleImportJson(event)">
+      
       <button class="btn" onclick="populateSampleData()">
         <span>📝</span> <span id="lblSampleData">Örnek Doldur</span>
       </button>
@@ -745,18 +70,18 @@
         <span>🖨️</span> <span id="lblPrint">Yazdır (A4)</span>
       </button>
     </div>
-  </div>
+  </header>
 
   <!-- A4 SAYFA ALANI -->
-  <div class="sheet-wrapper">
+  <main class="sheet-wrapper">
     
     <!-- DİKEY ŞABLON (Portrait) -->
-    <div id="portraitSheet" class="a4-sheet portrait">
+    <article id="portraitSheet" class="a4-sheet portrait">
       
-      <!-- Başlık Çubuğu -->
+      <!-- Başlık ve Meta -->
       <div class="header-bar">
         <div>
-          <div class="main-title" id="pMainTitle" contenteditable="true">AYLIK PROJE & ZAMAN PLANI</div>
+          <h1 class="main-title" id="pMainTitle" contenteditable="true">AYLIK PROJE & ZAMAN PLANI</h1>
           <div class="sub-title" id="pSubTitle">YÜKSEK ÖNCELİKLİ HEDEFLER & GELECEK YOL HARİTASI</div>
         </div>
         <div class="header-meta">
@@ -770,20 +95,19 @@
       </div>
 
       <!-- Ayın Ana Odağı -->
-      <div class="focus-strip">
+      <section class="focus-strip">
         <span class="focus-label" id="pFocusLabel">🎯 AYIN ANA HEDEFİ:</span>
         <span class="focus-text" id="pFocusText" contenteditable="true"></span>
-      </div>
+      </section>
 
-      <!-- TAKVİM BÖLÜMÜ -->
-      <div class="calendar-section">
+      <!-- Takvim Alanı (42 Hücre) -->
+      <section class="calendar-section">
         <div class="section-title">
           <span id="pCalTitle">Aylık Takvim & Teslim Tarihleri</span>
           <span class="section-tag" id="pCalTag">Zaman Çizelgesi</span>
         </div>
         
         <div class="calendar-grid">
-          <!-- Gün Başlıkları (JS ile i18n doldurulur) -->
           <div class="cal-day-header day-name-0">PZT</div>
           <div class="cal-day-header day-name-1">SAL</div>
           <div class="cal-day-header day-name-2">ÇAR</div>
@@ -791,26 +115,23 @@
           <div class="cal-day-header day-name-4">CUM</div>
           <div class="cal-day-header weekend day-name-5">CMT</div>
           <div class="cal-day-header weekend day-name-6">PAZ</div>
-
-          <!-- 35 Takvim Hücresi -->
           <div id="portraitCalCells" style="display: contents;"></div>
         </div>
-      </div>
+      </section>
 
-      <!-- İKİ SÜTUNLU ALT ALAN -->
+      <!-- İki Sütunlu Alt Alan (Aktif ve Gelecek Projeler) -->
       <div class="projects-container">
-        
-        <!-- SOL SÜTUN: ŞİMDİKİ PROJELER -->
-        <div class="current-projects-col">
+        <!-- Sol Sütun: Şimdiki Projeler -->
+        <section class="current-projects-col">
           <div class="section-title">
             <span id="pCurTitle">Şimdiki Projeler (Aktif & Devam Eden)</span>
             <span class="section-tag" id="pCurTag">Bu Ay Teslim</span>
           </div>
           <div id="portraitCurrentProjects"></div>
-        </div>
+        </section>
 
-        <!-- SAĞ SÜTUN: GELECEK PROJELER & KRİTİK NOTLAR -->
-        <div class="future-projects-col">
+        <!-- Sağ Sütun: Gelecek Projeler & Notlar -->
+        <section class="future-projects-col">
           <div>
             <div class="section-title">
               <span id="pFutTitle">Gelecek Projeler (Yol Haritası & Sıradakiler)</span>
@@ -819,7 +140,6 @@
             <div id="portraitFutureProjects"></div>
           </div>
 
-          <!-- Kritik Notlar ve Engeller -->
           <div class="notes-box">
             <div class="section-title" style="margin-bottom: 2px;">
               <span id="pNotesTitle">Kritik Notlar, Engeller & Bekleyen Kararlar</span>
@@ -827,23 +147,21 @@
             </div>
             <div id="portraitNotesList"></div>
           </div>
-        </div>
-
+        </section>
       </div>
 
-    </div>
-
+    </article>
 
     <!-- YATAY ŞABLON (Landscape) -->
-    <div id="landscapeSheet" class="a4-sheet landscape" style="display: none;">
+    <article id="landscapeSheet" class="a4-sheet landscape" style="display: none;">
       <div class="layout-grid">
         
-        <!-- YATAY SOL BÖLÜM: BÜYÜK TAKVİM -->
+        <!-- Yatay Sol: Geniş Takvim -->
         <div class="landscape-left">
           <div class="header-bar">
             <div>
-              <div class="main-title" id="lsMainTitle" contenteditable="true">AYLIK PROJE & ZAMAN PLANI</div>
-              <div style="font-size: 8px; color: var(--ink-mid); font-weight: 600;" id="lsSubTitle">GENİŞ TAKVİM GÖRÜNÜMÜ</div>
+              <h1 class="main-title" id="lsMainTitle" contenteditable="true">AYLIK PROJE & ZAMAN PLANI</h1>
+              <div style="font-size: 7.5px; color: var(--ink-mid); font-weight: 600;" id="lsSubTitle">GENİŞ TAKVİM GÖRÜNÜMÜ</div>
             </div>
             <div style="display: flex; gap: 6px; font-weight: 700; font-size: 10px;">
               <span style="border: 1.2px solid #000; padding: 1px 6px;"><span id="lsMonthLabel">AY</span>: <span class="ls-month" contenteditable="true">KASIM</span></span>
@@ -851,12 +169,11 @@
             </div>
           </div>
 
-          <div class="focus-strip" style="margin-bottom: 4px;">
+          <section class="focus-strip" style="margin-bottom: 3.5px;">
             <span class="focus-label" id="lsFocusLabel">🎯 HEDEF:</span>
             <span class="focus-text" id="lsFocusText" contenteditable="true"></span>
-          </div>
+          </section>
 
-          <!-- Yatay Takvim Grid -->
           <div class="calendar-grid">
             <div class="cal-day-header day-name-0">PZT</div>
             <div class="cal-day-header day-name-1">SAL</div>
@@ -865,1134 +182,45 @@
             <div class="cal-day-header day-name-4">CUM</div>
             <div class="cal-day-header weekend day-name-5">CMT</div>
             <div class="cal-day-header weekend day-name-6">PAZ</div>
-            
             <div id="landscapeCalCells" style="display: contents;"></div>
           </div>
         </div>
 
-        <!-- YATAY SAĞ BÖLÜM: ŞİMDİKİ VE GELECEK PROJELER -->
+        <!-- Yatay Sağ: Projeler & Notlar -->
         <div class="landscape-right">
-          <div>
+          <section>
             <div class="section-title">
               <span id="lsCurTitle">Şimdiki Projeler</span>
               <span class="section-tag" id="lsCurTag">Aktif</span>
             </div>
             <div id="landscapeCurrentProjects"></div>
-          </div>
+          </section>
 
-          <div>
+          <section>
             <div class="section-title">
               <span id="lsFutTitle">Gelecek Projeler (Pipeline)</span>
               <span class="section-tag" id="lsFutTag">Yol Haritası</span>
             </div>
             <div id="landscapeFutureProjects"></div>
-          </div>
+          </section>
 
-          <div class="notes-box" style="padding: 3px 5px;">
+          <section class="notes-box" style="padding: 3px 5px;">
             <div class="section-title" style="margin-bottom: 2px;">
               <span id="lsNotesTitle">Kritik Notlar & Engeller</span>
             </div>
             <div id="landscapeNotesList"></div>
-          </div>
+          </section>
         </div>
 
       </div>
-    </div>
+    </article>
 
-  </div>
+  </main>
 
-  <!-- JAVASCRIPT: ÇOK DİLLİ MOTOR & TAKVİM MANTIĞI -->
-  <script>
-    const I18N = {
-      tr: {
-        appTitle: "A4 Planlayıcı",
-        portrait: "Dikey (Portrait)",
-        landscape: "Yatay (Landscape)",
-        period: "Dönem:",
-        clearNumbers: "Tarihleri Temizle",
-        sampleData: "Örnek Doldur",
-        reset: "Şablonu Sıfırla",
-        print: "Yazdır (A4)",
-        save: "Kaydet",
-        export: "Dışa Aktar",
-        import: "İçe Aktar",
-        toastSaved: "Plan tarayıcıya kaydedildi",
-        toastImported: "Plan başarıyla yüklendi",
-        months: ["OCAK", "ŞUBAT", "MART", "NİSAN", "MAYIS", "HAZİRAN", "TEMMUZ", "AĞUSTOS", "EYLÜL", "EKİM", "KASIM", "ARALIK"],
-        monthsSelect: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"],
-        days: ["PAZARTESİ", "SALI", "ÇARŞAMBA", "PERŞEMBE", "CUMA", "CUMARTESİ", "PAZAR"],
-        daysShort: ["PZT", "SAL", "ÇAR", "PER", "CUM", "CMT", "PAZ"],
-        mainTitle: "AYLIK PROJE & ZAMAN PLANI",
-        subTitle: "YÜKSEK ÖNCELİKLİ HEDEFLER & GELECEK YOL HARİTASI",
-        monthLabel: "AY",
-        yearLabel: "YIL",
-        focusLabel: "🎯 AYIN ANA HEDEFİ:",
-        focusPlaceholder: "Bu ay tamamlanması gereken en kritik sonuç veya ana çıktı...",
-        calTitle: "Aylık Takvim & Teslim Tarihleri",
-        calTag: "Zaman Çizelgesi",
-        curTitle: "Şimdiki Projeler (Aktif & Devam Eden)",
-        curTag: "Bu Ay Teslim",
-        futTitle: "Gelecek Projeler (Yol Haritası & Sıradakiler)",
-        futTag: "Pipeline",
-        notesTitle: "Kritik Notlar, Engeller & Bekleyen Kararlar",
-        notesTag: "Risk & Takip",
-        duePrefix: "Bitiş:",
-        targetPrefix: "Hedef:",
-        prereqLabel: "Ön Koşul:",
-        priorityLabel: "Öncelik:",
-        resourceLabel: "Kaynak:",
-        statuses: ["Başladı", "%50", "Testte", "Bitti"],
-        samples: {
-          focus: "Müşteri paneli lansmanını tamamlamak ve ödeme sistemini canlıya almak.",
-          current: [
-            {
-              title: "Web Sitesi Yenileme & Lansman",
-              due: "15 Kasım",
-              tasks: ["Kullanıcı arayüz testleri ve mobil kontroller", "Ödeme sistemi entegrasyonu ve onay", "Canlı ortama geçiş ve ilk yedekleme"]
-            },
-            {
-              title: "Mobil Uygulama v2.0 Güncellemesi",
-              due: "24 Kasım",
-              tasks: ["Bildirim servisi hata ayıklaması", "App Store & Play Store inceleme gönderimi", "Kullanıcı kılavuzu ve sürüm notları yayını"]
-            },
-            {
-              title: "Müşteri Veritabanı Optimizasyonu",
-              due: "28 Kasım",
-              tasks: ["İndekslerin ve sorgu sürelerinin analizi", "Eski logların arşivlenmesi ve temizliği", "Performans raporunun hazırlanması"]
-            },
-            {
-              title: "Q4 Finansal ve Bütçe Planlaması",
-              due: "30 Kasım",
-              tasks: ["Hizmet ve sunucu giderlerinin dökümü", "Gelecek çeyrek yatırım kalemlerinin netleşmesi"]
-            }
-          ],
-          future: [
-            {
-              title: "Otomasyon & CRM Entegrasyonu",
-              target: "Aralık 2026",
-              prereq: "Mevcut API anahtarları ve webhook rotaları hazır olmalı.",
-              priority: "Yüksek",
-              resource: "Dahili Ekip"
-            },
-            {
-              title: "Yapay Zeka Destek Botu",
-              target: "Ocak 2027",
-              prereq: "Sık sorulan soruların ve dokümantasyonun güncellenmesi.",
-              priority: "Orta",
-              resource: "Ar-Ge"
-            },
-            {
-              title: "Çok Dilli İçerik ve Küresel Açılım",
-              target: "Q1 2027",
-              prereq: "Çeviri altyapısı ve yerelleştirme şablonu.",
-              priority: "Beklemede",
-              resource: "Dış Destek"
-            },
-            {
-              title: "Güvenlik Denetimi & Penetrasyon Testi",
-              target: "Q1 2027",
-              prereq: "Kod dondurma (code freeze) tarihi belirlenecek.",
-              priority: "Yüksek",
-              resource: "Güvenlik Uzmanı"
-            }
-          ],
-          notes: [
-            "3. taraf servis sağlayıcı sözleşme yenilemesi takip edilecek.",
-            "Sunucu kapasite artırımı için onay bekleyen talep.",
-            "Takım içi haftalık sprint değerlendirme toplantısı (Her Pazartesi)."
-          ]
-        }
-      },
-      en: {
-        appTitle: "A4 Planner",
-        portrait: "Portrait",
-        landscape: "Landscape",
-        period: "Period:",
-        clearNumbers: "Clear Dates",
-        sampleData: "Fill Samples",
-        reset: "Reset Template",
-        print: "Print (A4)",
-        save: "Save Plan",
-        export: "Export JSON",
-        import: "Import JSON",
-        toastSaved: "Plan saved locally",
-        toastImported: "Plan loaded successfully",
-        months: ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"],
-        monthsSelect: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        days: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"],
-        daysShort: ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
-        mainTitle: "MONTHLY PROJECT & SCHEDULE PLANNER",
-        subTitle: "HIGH-PRIORITY TARGETS & FUTURE ROADMAP",
-        monthLabel: "MONTH",
-        yearLabel: "YEAR",
-        focusLabel: "🎯 MAIN FOCUS OF THE MONTH:",
-        focusPlaceholder: "Primary outcome or milestone to achieve this month...",
-        calTitle: "Monthly Calendar & Deadlines",
-        calTag: "Timeline",
-        curTitle: "Current Projects (Active & In Progress)",
-        curTag: "Due This Month",
-        futTitle: "Upcoming Projects (Roadmap & Pipeline)",
-        futTag: "Pipeline",
-        notesTitle: "Critical Notes, Blockers & Decisions",
-        notesTag: "Risk & Action",
-        duePrefix: "Due:",
-        targetPrefix: "Target:",
-        prereqLabel: "Prerequisite:",
-        priorityLabel: "Priority:",
-        resourceLabel: "Resource:",
-        statuses: ["Started", "50%", "In Review", "Done"],
-        samples: {
-          focus: "Ship the refreshed client portal and enable Stripe billing.",
-          current: [
-            {
-              title: "Website Redesign & Production Launch",
-              due: "Nov 15",
-              tasks: ["Run UI/UX audits and cross-device responsive checks", "Payment gateway integration & webhook tests", "Production migration and initial backup verification"]
-            },
-            {
-              title: "Mobile App v2.0 Release",
-              due: "Nov 24",
-              tasks: ["Fix push notification delivery race condition", "Submit build to App Store & Google Play review", "Publish changelog and user onboarding documentation"]
-            },
-            {
-              title: "Database Indexing & Query Tuning",
-              due: "Nov 28",
-              tasks: ["Audit slow queries and re-index transaction tables", "Archive obsolete log partitions", "Generate post-tuning performance benchmark report"]
-            },
-            {
-              title: "Q4 Budgeting & Infrastructure Forecast",
-              due: "Nov 30",
-              tasks: ["Itemize cloud compute and SaaS vendor invoices", "Estimate next quarter compute and hiring budgets"]
-            }
-          ],
-          future: [
-            {
-              title: "Automated CRM & Webhook Integration",
-              target: "Dec 2026",
-              prereq: "API keys generated and rate limits confirmed.",
-              priority: "High",
-              resource: "Core Team"
-            },
-            {
-              title: "AI Support Assistant & Knowledge Base",
-              target: "Jan 2027",
-              prereq: "Update support docs and FAQ articles.",
-              priority: "Medium",
-              resource: "R&D"
-            },
-            {
-              title: "Multi-Language Localization",
-              target: "Q1 2027",
-              prereq: "Extract i18n JSON strings and set up translation workflow.",
-              priority: "Planned",
-              resource: "Vendor"
-            },
-            {
-              title: "Annual Security Audit & Penetration Test",
-              target: "Q1 2027",
-              prereq: "Enforce code freeze on core microservices.",
-              priority: "High",
-              resource: "Security"
-            }
-          ],
-          notes: [
-            "Contract renewal pending with cloud hosting provider.",
-            "Hardware token replacement for infrastructure admins.",
-            "Weekly sprint retro and release alignment every Monday."
-          ]
-        }
-      },
-      de: {
-        appTitle: "A4 Planer",
-        portrait: "Hochformat (Portrait)",
-        landscape: "Querformat (Landscape)",
-        period: "Zeitraum:",
-        clearNumbers: "Tage leeren",
-        sampleData: "Beispieldaten",
-        reset: "Zurücksetzen",
-        print: "Drucken (A4)",
-        save: "Speichern",
-        export: "Exportieren",
-        import: "Importieren",
-        toastSaved: "Plan lokal gespeichert",
-        toastImported: "Plan erfolgreich geladen",
-        months: ["JANUAR", "FEBRUAR", "MÄRZ", "APRIL", "MAI", "JUNI", "JULI", "AUGUST", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DEZEMBER"],
-        monthsSelect: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
-        days: ["MONTAG", "DIENSTAG", "MITTWOCH", "DONNERSTAG", "FREITAG", "SAMSTAG", "SONNTAG"],
-        daysShort: ["MO", "DI", "MI", "DO", "FR", "SA", "SO"],
-        mainTitle: "MONATLICHER PROJEKT- & ZEITPLAN",
-        subTitle: "HOHE PRIORITÄT & MEILENSTEIN-ROADMAP",
-        monthLabel: "MONAT",
-        yearLabel: "JAHR",
-        focusLabel: "🎯 MONATLICHER FOKUS:",
-        focusPlaceholder: "Das wichtigste Ergebnis oder Hauptziel für diesen Monat...",
-        calTitle: "Monatskalender & Fristen",
-        calTag: "Zeitplan",
-        curTitle: "Aktuelle Projekte (In Bearbeitung)",
-        curTag: "Lieferung diesen Monat",
-        futTitle: "Zukünftige Projekte (Roadmap & Pipeline)",
-        futTag: "Pipeline",
-        notesTitle: "Kritische Notizen, Risiken & Hindernisse",
-        notesTag: "Risiko & Nachverfolgung",
-        duePrefix: "Frist:",
-        targetPrefix: "Ziel:",
-        prereqLabel: "Voraussetzung:",
-        priorityLabel: "Priorität:",
-        resourceLabel: "Ressource:",
-        statuses: ["Gestartet", "50%", "Im Test", "Erledigt"],
-        samples: {
-          focus: "Abschluss des Kundenportals und Einführung des automatisierten Abrechnungssystems.",
-          current: [
-            {
-              title: "Relaunch der Unternehmens-Website",
-              due: "15. November",
-              tasks: ["UI- und Usability-Tests auf Mobilgeräten", "Zahlungs-Gateway-Integration und Verifizierung", "Produktions-Deployment und DNS-Umschaltung"]
-            },
-            {
-              title: "Mobile App v2.0 Release",
-              due: "24. November",
-              tasks: ["Behebung von Push-Notification-Latenzen", "App Store & Play Store Übermittlung", "Aktualisierung der Release Notes und Dokumentation"]
-            },
-            {
-              title: "Datenbank-Performance-Optimierung",
-              due: "28. November",
-              tasks: ["Index-Analyse und Slow-Query-Refactoring", "Archivierung historischer Audit-Logs", "Erstellung des Auslastungsberichts"]
-            },
-            {
-              title: "Budget- und Ressourcenplanung Q4",
-              due: "30. November",
-              tasks: ["Kostenübersicht für Cloud- und SaaS-Infrastruktur", "Definition der Investitionsschwerpunkte für das nächste Quartal"]
-            }
-          ],
-          future: [
-            {
-              title: "CRM- und Workflow-Automatisierung",
-              target: "Dezember 2026",
-              prereq: "Vorbereitung der internen REST-API-Schnittstellen.",
-              priority: "Hoch",
-              resource: "Core Team"
-            },
-            {
-              title: "KI-Support-Assistent Integration",
-              target: "Januar 2027",
-              prereq: "Aktualisierung der Wissensdatenbank und FAQs.",
-              priority: "Mittel",
-              resource: "DevOps"
-            },
-            {
-              title: "ISO 27001 Sicherheits-Audit",
-              target: "Februar 2027",
-              prereq: "Abschluss der internen Penetrationstests.",
-              priority: "Kritisch",
-              resource: "Security"
-            },
-            {
-              title: "Design System 3.0 Komponenten",
-              target: "März 2027",
-              prereq: "Freigabe der Figma UI-Token.",
-              priority: "Niedrig",
-              resource: "UI/UX"
-            }
-          ],
-          notes: [
-            "Wöchentliches Architektur-Sync jeden Dienstag um 10:00 Uhr.",
-            "Wartungsfenster für DB-Cluster am 20. November von 02:00 bis 04:00 Uhr.",
-            "Freigabe der Marketing-Assets bis spätestens 12. November erforderlich."
-          ]
-        }
-      },
-      ru: {
-        appTitle: "A4 Планировщик",
-        portrait: "Вертикальный",
-        landscape: "Горизонтальный",
-        period: "Период:",
-        clearNumbers: "Очистить даты",
-        sampleData: "Пример данных",
-        reset: "Сбросить шаблон",
-        print: "Печать (A4)",
-        save: "Сохранить",
-        export: "Экспорт JSON",
-        import: "Импорт JSON",
-        toastSaved: "План сохранен локально",
-        toastImported: "План успешно загружен",
-        months: ["ЯНВАРЬ", "ФЕВРАЛЬ", "МАРТ", "АПРЕЛЬ", "МАЙ", "ИЮНЬ", "ИЮЛЬ", "АВГУСТ", "СЕНТЯБРЬ", "ОКТЯБРЬ", "НОЯБРЬ", "ДЕКАБРЬ"],
-        monthsSelect: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
-        days: ["ПОНЕДЕЛЬНИК", "ВТОРНИК", "СРЕДА", "ЧЕТВЕРГ", "ПЯТНИЦА", "СУББОТА", "ВОСКРЕСЕНЬЕ"],
-        daysShort: ["ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ", "ВС"],
-        mainTitle: "ЕЖЕМЕСЯЧНЫЙ ПЛАН ПРОЕКТОВ И КАЛЕНДАРЬ",
-        subTitle: "ПРИОРИТЕТНЫЕ ЦЕЛИ И ПЕРСПЕКТИВНЫЙ ПЛАН",
-        monthLabel: "МЕСЯЦ",
-        yearLabel: "ГОД",
-        focusLabel: "🎯 ГЛАВНЫЙ ФОКУС МЕСЯЦА:",
-        focusPlaceholder: "Ключевой результат или цель, которую необходимо закрыть...",
-        calTitle: "Календарь на месяц и дедлайны",
-        calTag: "Таймлайн",
-        curTitle: "Текущие проекты (Активные и в работе)",
-        curTag: "Сдача в этом месяце",
-        futTitle: "Будущие проекты (План и дорожная карта)",
-        futTag: "Очередь",
-        notesTitle: "Важные заметки, блокеры и решения",
-        notesTag: "Риски и контроль",
-        duePrefix: "Срок:",
-        targetPrefix: "План:",
-        prereqLabel: "Условие:",
-        priorityLabel: "Приоритет:",
-        resourceLabel: "Ресурс:",
-        statuses: ["Начат", "50%", "Тест", "Готов"],
-        samples: {
-          focus: "Завершить релиз клиентского портала и запустить прием платежей.",
-          current: [
-            {
-              title: "Редизайн сайта и запуск в продакшн",
-              due: "15 ноября",
-              tasks: ["Тестирование мобильной верстки и UX сценариев", "Интеграция платёжного шлюза и проверка вебхуков", "Миграция базы и контрольный бэкап"]
-            },
-            {
-              title: "Обновление мобильного приложения v2.0",
-              due: "24 ноября",
-              tasks: ["Исправление сбоев службы push-уведомлений", "Отправка сборки на модерацию в App Store и Play Market", "Публикация документации и списка изменений"]
-            },
-            {
-              title: "Оптимизация базы данных и индексов",
-              due: "28 ноября",
-              tasks: ["Анализ медленных SQL-запросов и реиндексация", "Архивация устаревших системных логов", "Формирование отчета по производительности"]
-            },
-            {
-              title: "Финансовый план и бюджет на Q4",
-              due: "30 ноября",
-              tasks: ["Аудит расходов на облачные сервера и сервисы", "Согласование бюджета на следующий квартал"]
-            }
-          ],
-          future: [
-            {
-              title: "Автоматизация и интеграция с CRM",
-              target: "Декабрь 2026",
-              prereq: "Выпуск API ключей и настройка вебхуков.",
-              priority: "Высокий",
-              resource: "Команда разработки"
-            },
-            {
-              title: "ИИ Ассистент службы поддержки",
-              target: "Январь 2027",
-              prereq: "Актуализация базы знаний и FAQ.",
-              priority: "Средний",
-              resource: "R&D отдел"
-            },
-            {
-              title: "Мультиязычность и локализация",
-              target: "Q1 2027",
-              prereq: "Подготовка структуры файлов перевода.",
-              priority: "В планах",
-              resource: "Аутсорс"
-            },
-            {
-              title: "Аудит безопасности и пентест",
-              target: "Q1 2027",
-              prereq: "Фиксация стабильной версии (code freeze).",
-              priority: "Высокий",
-              resource: "Инженер ИБ"
-            }
-          ],
-          notes: [
-            "Продление контракта с хостинг-провайдером до конца месяца.",
-            "Запрос на расширение серверных мощностей на согласовании.",
-            "Еженедельный спринт-митинг каждый понедельник в 10:00."
-          ]
-        }
-      },
-      az: {
-        appTitle: "A4 Planlaşdırıcı",
-        portrait: "Şaquli (Portrait)",
-        landscape: "Üfüqi (Landscape)",
-        period: "Dövr:",
-        clearNumbers: "Tarixləri Təmizlə",
-        sampleData: "Nümunə Doldur",
-        reset: "Şablonu Sıfırla",
-        print: "Çap et (A4)",
-        save: "Yadda saxla",
-        export: "İxrac et",
-        import: "İdxal et",
-        toastSaved: "Plan brauzerdə saxlanıldı",
-        toastImported: "Plan uğurla yükləndi",
-        months: ["YANVAR", "FEVRAL", "MART", "APREL", "MAY", "İYUN", "İYUL", "AVQUST", "SENTYABR", "OKTYABR", "NOYABR", "DEKABR"],
-        monthsSelect: ["Yanvar", "Fevral", "Mart", "Aprel", "May", "İyun", "İyul", "Avqust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"],
-        days: ["BAZAR ERTƏSİ", "ÇƏRŞƏNBƏ AXŞAMI", "ÇƏRŞƏNBƏ", "CÜMƏ AXŞAMI", "CÜMƏ", "ŞƏNBƏ", "BAZAR"],
-        daysShort: ["B.E", "Ç.A", "ÇƏR", "C.A", "CÜM", "ŞƏN", "BAZ"],
-        mainTitle: "AYLIQ LAYİHƏ VƏ ZAMAN PLANI",
-        subTitle: "YÜKSƏK PRİORİTETLİ HƏDƏFLƏR VƏ GƏLƏCƏK YOL XƏRİTƏSİ",
-        monthLabel: "AY",
-        yearLabel: "İL",
-        focusLabel: "🎯 AYIN ƏSAS HƏDƏFİ:",
-        focusPlaceholder: "Bu ay təhvil verilməli olan ən vacib nəticə və ya məhsul...",
-        calTitle: "Aylıq Təqvim və Təhvil Tarixləri",
-        calTag: "Zaman Qrafiki",
-        curTitle: "Cari Layihələr (Aktiv və Davam Edən)",
-        curTag: "Bu Ay Təhvil",
-        futTitle: "Gələcək Layihələr (Yol Xəritəsi və Növbədəkilər)",
-        futTag: "Pipeline",
-        notesTitle: "Kritik Qeydlər, Maneələr və Qərarlar",
-        notesTag: "Risk və Nəzarət",
-        duePrefix: "Bitmə:",
-        targetPrefix: "Hədəf:",
-        prereqLabel: "İlkin Şərt:",
-        priorityLabel: "Prioritet:",
-        resourceLabel: "Resurs:",
-        statuses: ["Başladı", "50%", "Testdə", "Bitdi"],
-        samples: {
-          focus: "Müştəri panelinin təhvil verilməsi və ödəniş sisteminin istifadəyə verilməsi.",
-          current: [
-            {
-              title: "Veb Saytın Yenilənməsi və Buraxılış",
-              due: "15 Noyabr",
-              tasks: ["İstifadəçi interfeysi sınaqları və mobil uyğunluq", "Ödəniş sistemi inteqrasiyası və təsdiq", "Canlı mühitə keçid və ilkin ehtiyat nüsxəsi"]
-            },
-            {
-              title: "Mobil Tətbiq v2.0 Yeniləməsi",
-              due: "24 Noyabr",
-              tasks: ["Bildiriş xidməti xətalarının aradan qaldırılması", "App Store və Google Play moderasiyasına göndərilmə", "Dəyişikliklər siyahısı və təlimatın hazırlanması"]
-            },
-            {
-              title: "Məlumat Bazasının Optimizasiyası",
-              due: "28 Noyabr",
-              tasks: ["Yavaş sorğuların analizi və indeksləşdirmə", "Köhnə loqların arxivləşdirilməsi və təmizlənməsi", "Məhsuldarlıq hesabatının hazırlanması"]
-            },
-            {
-              title: "Q4 Maliyyə və Büdcə Planlaması",
-              due: "30 Noyabr",
-              tasks: ["Bulud xidmətləri və proqram xərclərinin dökümü", "Növbəti rübün investisiya büdcəsinin təsdiqi"]
-            }
-          ],
-          future: [
-            {
-              title: "Avtomatlaşdırma və CRM İnteqrasiyası",
-              target: "Dekabr 2026",
-              prereq: "API açarları və vebhook marşrutları hazır olmalıdır.",
-              priority: "Yüksək",
-              resource: "Daxili Komanda"
-            },
-            {
-              title: "Süni İntellekt Dəstək Botu",
-              target: "Yanvar 2027",
-              prereq: "Tez-tez verilən suallar bazasının yenilənməsi.",
-              priority: "Orta",
-              resource: "Tədqiqat (Ar-Ge)"
-            },
-            {
-              title: "Çoxdilli İnterfeys və Qlobal Yayım",
-              target: "Q1 2027",
-              prereq: "Tərcümə faylları strukturunun çıxarılması.",
-              priority: "Gözləmədə",
-              resource: "Xarici Dəstək"
-            },
-            {
-              title: "Təhlükəsizlik Auditi və Sızma Testi",
-              target: "Q1 2027",
-              prereq: "Əsas kod bazasının dondurulması (code freeze).",
-              priority: "Yüksək",
-              resource: "İT Təhlükəsizlik"
-            }
-          ],
-          notes: [
-            "Server xidmət təminatçısı ilə müqavilənin yenilənməsi.",
-            "Server tutumunun artırılması üçün təsdiq gözləyən müraciət.",
-            "Hər Bazar ertəsi saat 10:00-da həftəlik sprint toplantısı."
-          ]
-        }
-      }
-    };
+  <div id="toastNotification" class="toast" role="status" aria-live="polite">Plan kaydedildi</div>
 
-    let currentLang = localStorage.getItem("planner_lang") || "tr";
-    let currentOrientation = "portrait";
-    let isSampleLoaded = true;
-
-    function setLanguage(lang) {
-      if (!I18N[lang]) lang = "tr";
-      currentLang = lang;
-      localStorage.setItem("planner_lang", lang);
-      document.documentElement.lang = lang;
-
-      document.querySelectorAll(".lang-btn").forEach(btn => btn.classList.remove("active"));
-      const activeBtn = document.getElementById(`lang-${lang}`);
-      if (activeBtn) activeBtn.classList.add("active");
-
-      applyTranslations();
-      updateCalendarDates();
-      if (isSampleLoaded) {
-        renderSampleData();
-      }
-    }
-
-    function applyTranslations() {
-      const t = I18N[currentLang];
-
-      // Toolbar
-      document.getElementById("tTitle").innerText = t.appTitle;
-      document.getElementById("lblPortrait").innerText = t.portrait;
-      document.getElementById("lblLandscape").innerText = t.landscape;
-      document.getElementById("lblPeriod").innerText = t.period;
-      document.getElementById("lblClearNumbers").innerText = t.clearNumbers;
-      document.getElementById("lblSampleData").innerText = t.sampleData;
-      document.getElementById("lblReset").innerText = t.reset;
-      document.getElementById("lblPrint").innerText = t.print;
-      if (document.getElementById("lblSave")) document.getElementById("lblSave").innerText = t.save;
-      if (document.getElementById("lblExport")) document.getElementById("lblExport").innerText = t.export;
-      if (document.getElementById("lblImport")) document.getElementById("lblImport").innerText = t.import;
-
-      // Month select options
-      const mSelect = document.getElementById("monthSelect");
-      const currentSelectedMonth = mSelect.value || "11";
-      mSelect.innerHTML = "";
-      t.monthsSelect.forEach((mName, idx) => {
-        const opt = document.createElement("option");
-        opt.value = idx + 1;
-        opt.innerText = mName;
-        if (String(idx + 1) === currentSelectedMonth) opt.selected = true;
-        mSelect.appendChild(opt);
-      });
-
-      // Day of week headers
-      for (let i = 0; i < 7; i++) {
-        document.querySelectorAll(`.day-name-${i}`).forEach(el => {
-          el.innerText = t.daysShort[i];
-          el.title = t.days[i];
-        });
-      }
-
-      // Portrait labels
-      document.getElementById("pMainTitle").innerText = t.mainTitle;
-      document.getElementById("pSubTitle").innerText = t.subTitle;
-      document.getElementById("pMonthLabel").innerText = t.monthLabel;
-      document.getElementById("pYearLabel").innerText = t.yearLabel;
-      document.getElementById("pFocusLabel").innerText = t.focusLabel;
-      document.getElementById("pCalTitle").innerText = t.calTitle;
-      document.getElementById("pCalTag").innerText = t.calTag;
-      document.getElementById("pCurTitle").innerText = t.curTitle;
-      document.getElementById("pCurTag").innerText = t.curTag;
-      document.getElementById("pFutTitle").innerText = t.futTitle;
-      document.getElementById("pFutTag").innerText = t.futTag;
-      document.getElementById("pNotesTitle").innerText = t.notesTitle;
-      document.getElementById("pNotesTag").innerText = t.notesTag;
-
-      // Landscape labels
-      document.getElementById("lsMainTitle").innerText = t.mainTitle;
-      document.getElementById("lsSubTitle").innerText = t.subTitle;
-      document.getElementById("lsMonthLabel").innerText = t.monthLabel;
-      document.getElementById("lsYearLabel").innerText = t.yearLabel;
-      document.getElementById("lsFocusLabel").innerText = t.focusLabel;
-      document.getElementById("lsCurTitle").innerText = t.curTitle;
-      document.getElementById("lsCurTag").innerText = t.curTag;
-      document.getElementById("lsFutTitle").innerText = t.futTitle;
-      document.getElementById("lsFutTag").innerText = t.futTag;
-      document.getElementById("lsNotesTitle").innerText = t.notesTitle;
-    }
-
-    function switchOrientation(mode) {
-      currentOrientation = mode;
-      const portraitSheet = document.getElementById("portraitSheet");
-      const landscapeSheet = document.getElementById("landscapeSheet");
-      const btnPortrait = document.getElementById("btnPortrait");
-      const btnLandscape = document.getElementById("btnLandscape");
-
-      let styleTag = document.getElementById("dynamicPageStyle");
-      if (!styleTag) {
-        styleTag = document.createElement("style");
-        styleTag.id = "dynamicPageStyle";
-        document.head.appendChild(styleTag);
-      }
-
-      if (mode === "portrait") {
-        portraitSheet.style.display = "flex";
-        landscapeSheet.style.display = "none";
-        btnPortrait.classList.add("active");
-        btnLandscape.classList.remove("active");
-        styleTag.innerHTML = "@page { size: A4 portrait; margin: 8mm 9mm; }";
-      } else {
-        portraitSheet.style.display = "none";
-        landscapeSheet.style.display = "flex";
-        btnPortrait.classList.remove("active");
-        btnLandscape.classList.add("active");
-        styleTag.innerHTML = "@page { size: A4 landscape; margin: 8mm 9mm; }";
-      }
-    }
-
-    function generateCalendarCells(containerId, isLandscape = false) {
-      const container = document.getElementById(containerId);
-      container.innerHTML = "";
-
-      for (let i = 0; i < 35; i++) {
-        const isWeekend = (i % 7 === 5) || (i % 7 === 6);
-        const cell = document.createElement("div");
-        cell.className = `cal-cell ${isWeekend ? 'weekend' : ''}`;
-        cell.dataset.index = i;
-
-        cell.innerHTML = `
-          <div class="cal-cell-header">
-            <span></span>
-            <span class="cal-date-badge" contenteditable="true"></span>
-          </div>
-          <div class="cal-cell-lines">
-            <div class="cal-note-line" contenteditable="true"></div>
-            <div class="cal-note-line" contenteditable="true"></div>
-            ${isLandscape ? '<div class="cal-note-line" contenteditable="true"></div><div class="cal-note-line" contenteditable="true"></div>' : '<div class="cal-note-line" contenteditable="true"></div>'}
-          </div>
-        `;
-        container.appendChild(cell);
-      }
-    }
-
-    function updateCalendarDates() {
-      const month = parseInt(document.getElementById("monthSelect").value || "11", 10);
-      const year = parseInt(document.getElementById("yearSelect").value || "2026", 10);
-      const t = I18N[currentLang];
-
-      const monthName = t.months[month - 1];
-      document.getElementById("displayMonthText").innerText = monthName;
-      document.getElementById("displayYearText").innerText = year;
-      
-      document.querySelectorAll(".ls-month").forEach(el => el.innerText = monthName);
-      document.querySelectorAll(".ls-year").forEach(el => el.innerText = year);
-
-      const firstDayDate = new Date(year, month - 1, 1);
-      let startDay = firstDayDate.getDay(); 
-      let startCol = (startDay === 0) ? 6 : startDay - 1;
-      const daysInMonth = new Date(year, month, 0).getDate();
-
-      fillCellsForContainer("portraitCalCells", startCol, daysInMonth);
-      fillCellsForContainer("landscapeCalCells", startCol, daysInMonth);
-    }
-
-    function fillCellsForContainer(containerId, startCol, daysInMonth) {
-      const container = document.getElementById(containerId);
-      const cells = container.getElementsByClassName("cal-cell");
-
-      for (let i = 0; i < 35; i++) {
-        const badge = cells[i].querySelector(".cal-date-badge");
-        const dayNumber = i - startCol + 1;
-
-        if (dayNumber >= 1 && dayNumber <= daysInMonth) {
-          badge.innerText = dayNumber;
-          badge.style.visibility = "visible";
-          badge.style.border = "1px solid #000";
-          cells[i].style.opacity = "1";
-        } else {
-          badge.innerText = "";
-          badge.style.visibility = "hidden";
-          badge.style.border = "none";
-          cells[i].style.opacity = "0.35";
-        }
-      }
-    }
-
-    function clearNumbers() {
-      document.querySelectorAll(".cal-date-badge").forEach(b => {
-        b.innerText = "";
-        b.style.visibility = "visible";
-        b.style.border = "1px solid #000";
-      });
-      document.querySelectorAll(".cal-cell").forEach(c => c.style.opacity = "1");
-    }
-
-    function renderSampleData() {
-      isSampleLoaded = true;
-      const t = I18N[currentLang];
-      const s = t.samples;
-
-      document.getElementById("pFocusText").innerText = s.focus;
-      document.getElementById("lsFocusText").innerText = s.focus;
-
-      // Render Current Projects
-      const pCurCont = document.getElementById("portraitCurrentProjects");
-      const lsCurCont = document.getElementById("landscapeCurrentProjects");
-      pCurCont.innerHTML = "";
-      lsCurCont.innerHTML = "";
-
-      s.current.forEach((proj, idx) => {
-        const html = `
-          <div class="project-card">
-            <div class="project-card-header">
-              <div class="project-name">
-                <span class="chk"></span>
-                <span contenteditable="true">${proj.title}</span>
-              </div>
-              <span class="project-deadline" contenteditable="true">${t.duePrefix} ${proj.due}</span>
-            </div>
-            <ul class="project-tasks">
-              ${proj.tasks.map(task => `
-                <li class="task-item">
-                  <span class="chk"></span>
-                  <span class="task-text" contenteditable="true">${task}</span>
-                </li>
-              `).join('')}
-            </ul>
-            <div class="project-status-bar">
-              ${t.statuses.map(st => `
-                <span class="status-opt"><span class="circle-chk"></span> ${st}</span>
-              `).join('')}
-            </div>
-          </div>
-        `;
-        pCurCont.insertAdjacentHTML("beforeend", html);
-
-        // Landscape variant (first 3 projects for space fit)
-        if (idx < 3) {
-          const lsHtml = `
-            <div class="project-card" style="margin-bottom: 3px; padding: 3px 5px;">
-              <div class="project-card-header">
-                <span class="project-name"><span class="chk"></span><span contenteditable="true">${proj.title}</span></span>
-                <span class="project-deadline" contenteditable="true">${proj.due}</span>
-              </div>
-              <ul class="project-tasks">
-                ${proj.tasks.slice(0, 2).map(task => `
-                  <li class="task-item"><span class="chk"></span><span class="task-text" contenteditable="true">${task}</span></li>
-                `).join('')}
-              </ul>
-              <div class="project-status-bar">
-                ${t.statuses.map(st => `<span>[ ] ${st}</span>`).join(' ')}
-              </div>
-            </div>
-          `;
-          lsCurCont.insertAdjacentHTML("beforeend", lsHtml);
-        }
-      });
-
-      // Render Future Projects
-      const pFutCont = document.getElementById("portraitFutureProjects");
-      const lsFutCont = document.getElementById("landscapeFutureProjects");
-      pFutCont.innerHTML = "";
-      lsFutCont.innerHTML = "";
-
-      s.future.forEach((fProj, idx) => {
-        const html = `
-          <div class="future-card">
-            <div class="future-header">
-              <span contenteditable="true">${idx + 1}. ${fProj.title}</span>
-              <span style="font-size: 8px; border: 1px solid #000; padding: 0 3px;" contenteditable="true">${fProj.target}</span>
-            </div>
-            <div class="task-text" style="font-size: 8px;" contenteditable="true">${t.prereqLabel} ${fProj.prereq}</div>
-            <div class="future-meta">
-              <span>${t.priorityLabel} <strong>[${fProj.priority}]</strong></span>
-              <span>${t.resourceLabel} ${fProj.resource}</span>
-            </div>
-          </div>
-        `;
-        pFutCont.insertAdjacentHTML("beforeend", html);
-
-        if (idx < 3) {
-          const lsHtml = `
-            <div class="future-card" style="padding: 2.5px 4px; margin-bottom: 2.5px;">
-              <div class="future-header">
-                <span contenteditable="true">${idx + 1}. ${fProj.title}</span>
-                <span style="font-size: 7.5px; border: 1px solid #000; padding: 0 2px;" contenteditable="true">${fProj.target}</span>
-              </div>
-              <div style="font-size: 7.5px; color: var(--ink-mid);" contenteditable="true">${fProj.prereq} [${fProj.priority}]</div>
-            </div>
-          `;
-          lsFutCont.insertAdjacentHTML("beforeend", lsHtml);
-        }
-      });
-
-      // Render Notes
-      const pNotesCont = document.getElementById("portraitNotesList");
-      const lsNotesCont = document.getElementById("landscapeNotesList");
-      pNotesCont.innerHTML = "";
-      lsNotesCont.innerHTML = "";
-
-      s.notes.forEach(note => {
-        pNotesCont.insertAdjacentHTML("beforeend", `
-          <div class="note-row"><span class="chk"></span><span class="note-line" contenteditable="true">${note}</span></div>
-        `);
-        lsNotesCont.insertAdjacentHTML("beforeend", `
-          <div class="note-row"><span class="chk"></span><span class="note-line" contenteditable="true">${note}</span></div>
-        `);
-      });
-
-      // Empty filler lines
-      for (let i = 0; i < 2; i++) {
-        pNotesCont.insertAdjacentHTML("beforeend", `
-          <div class="note-row"><span class="chk"></span><span class="note-line" contenteditable="true"></span></div>
-        `);
-      }
-    }
-
-    function clearAllData() {
-      isSampleLoaded = false;
-      clearNumbers();
-      const t = I18N[currentLang];
-
-      document.getElementById("pFocusText").innerText = "";
-      document.getElementById("lsFocusText").innerText = "";
-
-      const pCurCont = document.getElementById("portraitCurrentProjects");
-      const lsCurCont = document.getElementById("landscapeCurrentProjects");
-      pCurCont.innerHTML = "";
-      lsCurCont.innerHTML = "";
-
-      for (let i = 1; i <= 4; i++) {
-        const html = `
-          <div class="project-card">
-            <div class="project-card-header">
-              <div class="project-name">
-                <span class="chk"></span>
-                <span contenteditable="true">Proje ${i}: ___________________________________</span>
-              </div>
-              <span class="project-deadline" contenteditable="true">${t.duePrefix} _____</span>
-            </div>
-            <ul class="project-tasks">
-              <li class="task-item"><span class="chk"></span><span class="task-text" contenteditable="true"></span></li>
-              <li class="task-item"><span class="chk"></span><span class="task-text" contenteditable="true"></span></li>
-              <li class="task-item"><span class="chk"></span><span class="task-text" contenteditable="true"></span></li>
-            </ul>
-            <div class="project-status-bar">
-              ${t.statuses.map(st => `<span class="status-opt"><span class="circle-chk"></span> ${st}</span>`).join('')}
-            </div>
-          </div>
-        `;
-        pCurCont.insertAdjacentHTML("beforeend", html);
-        if (i <= 3) lsCurCont.insertAdjacentHTML("beforeend", html);
-      }
-
-      const pFutCont = document.getElementById("portraitFutureProjects");
-      const lsFutCont = document.getElementById("landscapeFutureProjects");
-      pFutCont.innerHTML = "";
-      lsFutCont.innerHTML = "";
-
-      for (let i = 1; i <= 4; i++) {
-        const html = `
-          <div class="future-card">
-            <div class="future-header">
-              <span contenteditable="true">${i}. _________________________________</span>
-              <span style="font-size: 8px; border: 1px solid #000; padding: 0 3px;" contenteditable="true">${t.targetPrefix} _____</span>
-            </div>
-            <div class="task-text" style="font-size: 8px;" contenteditable="true">${t.prereqLabel} ____________________________________</div>
-            <div class="future-meta">
-              <span>${t.priorityLabel} [  ]</span>
-              <span>${t.resourceLabel} _________</span>
-            </div>
-          </div>
-        `;
-        pFutCont.insertAdjacentHTML("beforeend", html);
-        if (i <= 3) lsFutCont.insertAdjacentHTML("beforeend", html);
-      }
-
-      const pNotesCont = document.getElementById("portraitNotesList");
-      const lsNotesCont = document.getElementById("landscapeNotesList");
-      pNotesCont.innerHTML = "";
-      lsNotesCont.innerHTML = "";
-
-      for (let i = 0; i < 5; i++) {
-        pNotesCont.insertAdjacentHTML("beforeend", `
-          <div class="note-row"><span class="chk"></span><span class="note-line" contenteditable="true"></span></div>
-        `);
-        if (i < 3) {
-          lsNotesCont.insertAdjacentHTML("beforeend", `
-            <div class="note-row"><span class="chk"></span><span class="note-line" contenteditable="true"></span></div>
-          `);
-        }
-      }
-
-      document.querySelectorAll(".cal-note-line").forEach(l => l.innerText = "");
-    }
-
-    
-    // --- MONAT WECHSELN (PREV / NEXT) ---
-    function changeMonth(delta) {
-      const mSelect = document.getElementById("monthSelect");
-      const ySelect = document.getElementById("yearSelect");
-      let m = parseInt(mSelect.value, 10) + delta;
-      let y = parseInt(ySelect.value, 10);
-
-      if (m < 1) {
-        m = 12;
-        y--;
-      } else if (m > 12) {
-        m = 1;
-        y++;
-      }
-
-      let foundYear = false;
-      for (let i = 0; i < ySelect.options.length; i++) {
-        if (ySelect.options[i].value === String(y)) {
-          ySelect.selectedIndex = i;
-          foundYear = true;
-          break;
-        }
-      }
-      if (!foundYear) {
-        const opt = document.createElement("option");
-        opt.value = y;
-        opt.innerText = y;
-        opt.selected = true;
-        ySelect.appendChild(opt);
-      }
-
-      mSelect.value = m;
-      updateCalendarDates();
-      showToast(`${mSelect.options[mSelect.selectedIndex].text} ${y}`);
-      triggerAutoSave();
-    }
-
-    // --- TOAST NOTIFICATIONS ---
-    function showToast(message) {
-      const toast = document.getElementById("toastNotification");
-      if (!toast) return;
-      toast.innerText = message;
-      toast.classList.add("show");
-      clearTimeout(window.__toastTimer);
-      window.__toastTimer = setTimeout(() => {
-        toast.classList.remove("show");
-      }, 2500);
-    }
-
-    // --- LOCALSTORAGE & JSON EXPORT/IMPORT ---
-    function getPlannerState() {
-      return {
-        version: 1,
-        lang: currentLang,
-        orientation: currentOrientation,
-        month: document.getElementById("monthSelect").value,
-        year: document.getElementById("yearSelect").value,
-        portrait: {
-          focus: document.getElementById("pFocusText").innerText,
-          currentProjects: document.getElementById("portraitCurrentProjects").innerHTML,
-          futureProjects: document.getElementById("portraitFutureProjects").innerHTML,
-          notes: document.getElementById("portraitNotesList").innerHTML
-        },
-        landscape: {
-          focus: document.getElementById("lsFocusText").innerText,
-          currentProjects: document.getElementById("landscapeCurrentProjects").innerHTML,
-          futureProjects: document.getElementById("landscapeFutureProjects").innerHTML,
-          notes: document.getElementById("landscapeNotesList").innerHTML
-        }
-      };
-    }
-
-    function savePlanToStorage(manual = false) {
-      try {
-        const state = getPlannerState();
-        localStorage.setItem("monthly_planner_saved_state", JSON.stringify(state));
-        if (manual) {
-          const t = I18N[currentLang];
-          showToast(t.toastSaved || "Plan kaydedildi");
-        }
-      } catch (e) {
-        console.error("Failed to save to localStorage", e);
-      }
-    }
-
-    function loadPlanFromState(state) {
-      if (!state) return;
-      if (state.lang) setLanguage(state.lang);
-      if (state.orientation) switchOrientation(state.orientation);
-      if (state.month) document.getElementById("monthSelect").value = state.month;
-      if (state.year) document.getElementById("yearSelect").value = state.year;
-      updateCalendarDates();
-
-      if (state.portrait) {
-        if (state.portrait.focus !== undefined) document.getElementById("pFocusText").innerText = state.portrait.focus;
-        if (state.portrait.currentProjects) document.getElementById("portraitCurrentProjects").innerHTML = state.portrait.currentProjects;
-        if (state.portrait.futureProjects) document.getElementById("portraitFutureProjects").innerHTML = state.portrait.futureProjects;
-        if (state.portrait.notes) document.getElementById("portraitNotesList").innerHTML = state.portrait.notes;
-      }
-
-      if (state.landscape) {
-        if (state.landscape.focus !== undefined) document.getElementById("lsFocusText").innerText = state.landscape.focus;
-        if (state.landscape.currentProjects) document.getElementById("landscapeCurrentProjects").innerHTML = state.landscape.currentProjects;
-        if (state.landscape.futureProjects) document.getElementById("landscapeFutureProjects").innerHTML = state.landscape.futureProjects;
-        if (state.landscape.notes) document.getElementById("landscapeNotesList").innerHTML = state.landscape.notes;
-      }
-    }
-
-    function exportPlanJson() {
-      const state = getPlannerState();
-      const month = document.getElementById("monthSelect").value;
-      const year = document.getElementById("yearSelect").value;
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
-      const downloadAnchor = document.createElement("a");
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `planner-${year}-${String(month).padStart(2, "0")}.json`);
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-      showToast("JSON indirildi");
-    }
-
-    function triggerImportJson() {
-      document.getElementById("jsonFileInput").click();
-    }
-
-    function handleImportJson(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const parsed = JSON.parse(e.target.result);
-          loadPlanFromState(parsed);
-          savePlanToStorage(false);
-          const t = I18N[currentLang];
-          showToast(t.toastImported || "Plan yüklendi");
-        } catch (err) {
-          alert("JSON hatası: " + err.message);
-        }
-      };
-      reader.readAsText(file);
-      event.target.value = "";
-    }
-
-    let autoSaveTimer = null;
-    function triggerAutoSave() {
-      clearTimeout(autoSaveTimer);
-      autoSaveTimer = setTimeout(() => {
-        savePlanToStorage(false);
-      }, 600);
-    }
-
-    // --- INTERACTIVE CHECKBOXES & LISTENERS ---
-    document.addEventListener("click", function(e) {
-      const chk = e.target.closest(".chk");
-      if (chk) {
-        chk.classList.toggle("checked");
-        triggerAutoSave();
-        return;
-      }
-      const circleChk = e.target.closest(".circle-chk");
-      if (circleChk) {
-        circleChk.classList.toggle("checked");
-        triggerAutoSave();
-        return;
-      }
-    });
-
-    document.addEventListener("input", function(e) {
-      if (e.target.getAttribute("contenteditable") === "true") {
-        triggerAutoSave();
-      }
-    });
-
-    document.addEventListener("keydown", function(e) {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
-        e.preventDefault();
-        savePlanToStorage(true);
-      }
-    });
-
-    function populateSampleData() {
-      renderSampleData();
-      updateCalendarDates();
-    }
-
-    // Başlangıç Kurulumu ve URL Parametre Desteği
-    const urlParams = new URLSearchParams(window.location.search);
-    const initialLang = urlParams.get("lang") || currentLang;
-    const initialMode = urlParams.get("mode") || "portrait";
-
-    generateCalendarCells("portraitCalCells", false);
-    generateCalendarCells("landscapeCalCells", true);
-    setLanguage(initialLang);
-    if (initialMode === "landscape") {
-      switchOrientation("landscape");
-    }
-  </script>
-  <div id="toastNotification" class="toast">Plan kaydedildi</div>
+  <!-- JAVASCRIPT BAĞLANTILARI -->
+  <script src="js/i18n.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>

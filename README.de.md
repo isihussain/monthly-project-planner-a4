@@ -1,59 +1,73 @@
-# Monatlicher Projekt- & Kalenderplaner (A4 Druckformat)
+# Monatlicher Projekt- & Kalenderplaner (Druckbares A4)
 
-Ein minimalistischer, tinten- und tonersparender A4-Monats- und Projektplaner für das Drucken auf Papier oder das Speichern als PDF.
+Ein minimalistischer, tintensparender monatlicher Projekt- und Terminplaner auf einer einzelnen A4-Seite. Entwickelt für den Schwarz-Weiß-Druck auf Papier oder das Speichern als PDF.
 
-[ **English** ](README.md) | [ **Deutsch** ] | [ **Türkçe** ](README.tr.md) | [ **Русский** ](README.ru.md) | [ **Azərbaycan** ](README.az.md)
+[ **English** ](README.md) | [ **Türkçe** ](README.tr.md) | [ **Deutsch** ] | [ **Русский** ](README.ru.md) | [ **Azərbaycan** ](README.az.md)
 
-**Live-Demo:** [https://isihussain.github.io/monthly-project-planner-a4/](https://isihussain.github.io/monthly-project-planner-a4/)
-
----
-
-## Funktionen
-
-- **Tintensparendes Monochrom-Design:** Reines Schwarz und dezente Graustufen ohne deckende Schwarzflächen – spart Tinte und Toner.
-- **Einzelblatt-Garantie (A4):** Präzise kalibriert auf 210 mm × 297 mm (Hochformat) und 297 mm × 210 mm (Querformat) mit CSS-Druckregeln zur Vermeidung von Leerseiten.
-- **Mehrsprachigkeit:** Umschaltung mit einem Klick zwischen **Englisch (EN)**, **Deutsch (DE)**, **Türkisch (TR)**, **Russisch (RU)** und **Aserbaidschanisch (AZ)**.
-- **Duale Layouts:**
-  - **Hochformat (Portrait):** Kalenderübersicht oben, zweispaltige Aufteilung für aktuelle Projekte und Roadmap unten.
-  - **Querformat (Landscape):** Großzügige Kalenderzellen links, Projektkarten und Notizen rechts.
-- **Interaktive Checkboxen:** Klickbare Aufgaben- und Status-Checkboxen mit druckoptimierten Häkchen (`✓`).
-- **Lokale Speicherung & JSON-Datenaustausch:**
-  - Automatische Sicherung im Browser (`localStorage`).
-  - Vollständiger JSON-Export und -Import zum Archivieren und Laden individueller Monatspläne.
-  - Tastenkombination `Strg + S` / `Cmd + S` zum manuellen Speichern mit Toast-Bestätigung.
-- **Schnelle Monatsnavigation:** Ein-Klick-Vor- und Zurück-Tasten (`◀` / `▶`) neben der Datumsauswahl.
-- **Null Abhängigkeiten:** Reines HTML5, CSS3 und Vanilla JavaScript – läuft vollständig offline ohne Build-Tools oder Server.
+**Online-Demo:** [https://isihussain.github.io/monthly-project-planner-a4/](https://isihussain.github.io/monthly-project-planner-a4/)
 
 ---
 
-## Enthaltene Abschnitte
+## Vorschau
 
-1. **Kopfzeile & Monatlicher Fokus:** Monat, Jahr und eine dedizierte Zeile für das Hauptziel des Monats.
-2. **Monatskalender-Raster:** 35-Zellen-Übersicht von Montag bis Sonntag mit Datumsfeldern und Notizlinien.
-3. **Aktuelle Projekte (Aktiv):** Bis zu 4 parallele Projekte mit Meilenstein-Checkboxen, Fristen und Statusanzeigen (`Gestartet`, `50%`, `Im Test`, `Erledigt`).
-4. **Zukünftige Projekte (Pipeline):** Vorbereitete Projekte mit Zielterminen, Voraussetzungen und Prioritätsstufen.
-5. **Kritische Notizen & Hindernisse:** Platz für Risiken, externe Abhängigkeiten und offene Entscheidungen.
+### Hochformat (Portrait)
+![Hochformat Vorschau](assets/preview-portrait.png)
+
+### Querformat (Landscape)
+![Querformat Vorschau](assets/preview-landscape.png)
+
+---
+
+## Hauptfunktionen
+
+- **Tintensparendes Monochrom:** Klare Linien ohne massive schwarze Farbflächen zur Schonung von Druckertinte und Toner.
+- **Einzelblatt-Garantie (A4):** Präzise CSS-Druckregeln verhindern unabsichtliche leere Folgeseiten.
+- **Vollständiges 42-Zellen-Monatsraster:** 6 Wochenzeilen garantieren, dass Monate wie November 2026 oder März 2026 alle Tage (bis zum 31.) vollständig abbilden.
+- **Mehrsprachigkeit:** Umschaltung mit einem Klick zwischen **Deutsch (DE)**, **Englisch (EN)**, **Türkisch (TR)**, **Russisch (RU)** und **Aserbaidschanisch (AZ)**.
+- **Zwei Layout-Optionen:**
+  - **Hochformat:** Kompakter Kalender oben, zweispaltige Projekt- und Roadmap-Karten unten.
+  - **Querformat:** Großzügige Tageszellen links, Aufgaben- und Risikolisten rechts.
+- **Direkt im Browser bearbeitbar:** Alle Überschriften, Aufgaben und Notizen können vor dem Ausdruck direkt am Bildschirm editiert werden (`contenteditable`).
+- **Zwei-Wege-Synchronisation:** Änderungen im Hochformat werden in Echtzeit ins Querformat übertragen.
+- **Lokale Speicherung & Datensicherheit:** Automatische Speicherung im Browser (`localStorage`), JSON-Export und Import mit XSS-geschützter Datenbindung.
+- **Keine externen Abhängigkeiten:** Reines HTML5, CSS3 und Vanilla JavaScript. Funktioniert komplett offline.
+
+---
+
+## Struktur des Planers
+
+1. **Monatsfokus & Zeitraum:** Monat, Jahr und die zentrale Zielsetzung des Monats.
+2. **Monatskalender (42 Zellen):** Montag bis Sonntag Übersicht mit Datumsplaketten und Notizzeilen pro Tag.
+3. **Aktuelle Projekte (Laufend):** Bis zu 4 parallele Projekte mit Fristen, Aufgaben-Checkboxes (`[ ]`) und Statusstufen (`Gestartet`, `50%`, `Im Test`, `Erledigt`).
+4. **Zukünftige Projekte (Roadmap & Pipeline):** Vorgemerkte Projekte, Zieltermine, Voraussetzungen und Prioritäten.
+5. **Kritische Notizen, Risiken & Hindernisse:** Notizzeilen für ausstehende Freigaben und Entscheidungen.
 
 ---
 
 ## Schnelleinstieg
 
 ### 1. Im Browser öffnen
+
+Im Terminal ausführen:
 ```bash
-git clone https://github.com/isihussain/monthly-project-planner-a4.git
-cd monthly-project-planner-a4
 open index.html
 ```
+Oder per Doppelklick auf `index.html` im Dateimanager.
 
-### 2. Als PDF drucken oder speichern
-- Drücken Sie `Strg + P` (Windows/Linux) oder `Cmd + P` (macOS).
-- Wählen Sie **Als PDF speichern** oder Ihren Drucker.
-- Papierformat: **A4**.
-- Ränder: **Standard** oder **Keine**.
-- Option **Hintergrundgrafiken aktivieren** auswählen.
+Parameter können über die URL übergeben werden:
+- `index.html?lang=de&mode=portrait`
+- `index.html?lang=de&mode=landscape`
+
+### 2. Druckeinstellungen (`Cmd + P` oder `Ctrl + P`)
+
+- **Ziel:** Drucker oder „Als PDF speichern“
+- **Papierformat:** A4
+- **Farbe:** Schwarz-Weiß / Monochrom
+- **Ränder:** Standard (oder 8 mm)
+- **Optionen:** **„Hintergrundgrafiken“** aktivieren (gewährleistet saubere Linien und Rahmen).
 
 ---
 
 ## Lizenz
 
-Dieses Projekt ist unter der [MIT-Lizenz](LICENSE) lizenziert. Entworfen und gepflegt von [Ismayil Hussain](https://github.com/isihussain).
+Dieses Projekt ist unter der [MIT-Lizenz](LICENSE) lizenziert.
