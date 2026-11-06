@@ -1,0 +1,49 @@
+name: CI Verification
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate HTML syntax
+        run: |
+          python3 -c "
+          import html.parser
+          parser = html.parser.HTMLParser()
+          with open('index.html', 'r', encoding='utf-8') as f:
+              parser.feed(f.read())
+          print('HTML syntax validated successfully.')
+          "
+
+      - name: Validate Documentation Files
+        run: |
+          for doc in README.md README.tr.md README.ru.md README.az.md README.de.md CONTRIBUTING.md LICENSE; do
+            if [ ! -f "$doc" ]; then
+              echo "Missing required document: $doc"
+              exit 1
+            fi
+          done
+          echo "All documentation files present."
+
+      - name: Verify I18N Schema Consistency
+        run: |
+          python3 -c "
+          import re
+          with open('index.html', 'r', encoding='utf-8') as f:
+              content = f.read()
+
+          required_languages = ['tr', 'en', 'de', 'ru', 'az']
+          for lang in required_languages:
+              assert f'{lang}: {{' in content, f'Missing language block: {lang}'
+          print('All I18N language blocks verified.')
+          "

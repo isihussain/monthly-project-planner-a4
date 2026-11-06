@@ -2,7 +2,7 @@
 
 A4 kağıdına tek sayfa olarak basılabilen, siyah-beyaz, yüksek kontrastlı ve mürekkep tasarruflu aylık proje ve zaman planlayıcısı.
 
-[ **English** ](README.md) | [ **Türkçe** ] | [ **Русский** ](README.ru.md) | [ **Azərbaycan** ](README.az.md)
+[ **English** ](README.md) | [ **Deutsch** ](README.de.md) | [ **Türkçe** ] | [ **Русский** ](README.ru.md) | [ **Azərbaycan** ](README.az.md)
 
 **Canlı Kullanım (Web):** [https://isihussain.github.io/monthly-project-planner-a4/](https://isihussain.github.io/monthly-project-planner-a4/)
 
@@ -22,10 +22,16 @@ A4 kağıdına tek sayfa olarak basılabilen, siyah-beyaz, yüksek kontrastlı v
 
 - **Siyah-Beyaz & Mürekkep Tasarrufu:** Toner ve kartuş harcamayan, gereksiz koyu zeminlerden arındırılmış temiz çizgi tasarımı.
 - **Tek Sayfa A4 Garantisi:** Milimetrik CSS print kuralları (`210mm × 297mm`) ile ikinci sayfaya taşma yapmaz.
-- **Çok Dilli Destek:** Tek tıkla **Türkçe (TR)**, **İngilizce (EN)**, **Rusça (RU)** ve **Azerbaycan Türkçesi (AZ)** geçişi.
+- **Çok Dilli Destek:** Tek tıkla **Türkçe (TR)**, **İngilizce (EN)**, **Almanca (DE)**, **Rusça (RU)** ve **Azerbaycan Türkçesi (AZ)** geçişi.
 - **Çift Yerleşim Düzeni:**
   - **Dikey (Portrait):** Üstte takvim, altta iki sütunlu aktif proje ve yol haritası paneli.
   - **Yatay (Landscape):** Solda geniş takvim kutuları, sağda proje listeleri ve not alanı.
+- **İnteraktif Kutucuklar:** Tıklanabilir görev ve aşama kutucukları (`✓`), mürekkep dostu baskı çıktısı.
+- **Yerel Kayıt & JSON İçe/Dışa Aktarma:**
+  - Tarayıcı `localStorage` üzerine otomatik kayıt.
+  - Planlarınızı yedeklemek veya paylaşmak için JSON formatında Dışa/İçe aktarma.
+  - `Ctrl + S` / `Cmd + S` kısayoluyla anında kaydetme ve toast bildirimi.
+- **Hızlı Ay Gezinimi:** `◀` ve `▶` butonları ile aylar arasında tek tıkla geçiş.
 - **Tarayıcıda Düzenlenebilir:** Yazdırmadan önce tüm başlıklar, proje isimleri, görevler ve tarihler tıklanarak klavyeyle düzenlenebilir (`contenteditable`).
 - **Otomatik veya Manuel Tarihlendirme:** Ay ve yıl seçilerek takvim günleri otomatik dizilebilir veya "Tarihleri Temizle" seçeneğiyle tamamen boş şablon basılabilir.
 - **Sıfır Bağımlılık:** Framework veya kütüphane gerektirmez. Sade HTML, CSS ve JavaScript ile doğrudan çevrimdışı çalışır.
