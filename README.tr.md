@@ -4,6 +4,8 @@ A4 kağıdına tek sayfa olarak basılabilen, siyah-beyaz, yüksek kontrastlı v
 
 [ **English** ](README.md) | [ **Türkçe** ] | [ **Русский** ](README.ru.md) | [ **Azərbaycan** ](README.az.md)
 
+**Canlı Kullanım (Web):** [https://isihussain.github.io/monthly-project-planner-a4/](https://isihussain.github.io/monthly-project-planner-a4/)
+
 ---
 
 ## Ekran Görüntüleri

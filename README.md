@@ -4,6 +4,8 @@ A minimalist, ink-friendly, single-page A4 monthly project and schedule planner.
 
 [ **English** ] | [ **Türkçe** ](README.tr.md) | [ **Русский** ](README.ru.md) | [ **Azərbaycan** ](README.az.md)
 
+**Live Demo:** [https://isihussain.github.io/monthly-project-planner-a4/](https://isihussain.github.io/monthly-project-planner-a4/)
+
 ---
 
 ## Previews
