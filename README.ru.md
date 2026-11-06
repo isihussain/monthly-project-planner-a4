@@ -2,7 +2,7 @@
 
 Минималистичный, экономящий чернила шаблон ежемесячного планировщика проектов и календаря на одном листе A4. Предназначен для черно-белой печати на бумаге или сохранения в PDF.
 
-[ **English** ](README.md) | [ **Türkçe** ](README.tr.md) | [ **Русский** ] | [ **Azərbaycan** ](README.az.md)
+[ **English** ](README.md) | [ **Deutsch** ](README.de.md) | [ **Türkçe** ](README.tr.md) | [ **Русский** ] | [ **Azərbaycan** ](README.az.md)
 
 **Онлайн демо:** [https://isihussain.github.io/monthly-project-planner-a4/](https://isihussain.github.io/monthly-project-planner-a4/)
 
