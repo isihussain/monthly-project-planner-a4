@@ -91,6 +91,12 @@ You can also pass URL query parameters:
 
 ---
 
+## 🔗 Related Projects
+
+- **[IT Project Task & Criticality Matrix (Printable A4)](https://github.com/isihussain/it-task-matrix-a4)** — A minimalist, ink-friendly, 4-language A4 printable task & criticality matrix for Frontend and Admin Backend development workflows. [Live Demo](https://isihussain.github.io/it-task-matrix-a4/)
+
+---
+
 ## Contributing
 
 Contributions are welcome. You can add new languages, enhance print styles, or refine layout responsiveness. Read [CONTRIBUTING.md](CONTRIBUTING.md) for instructions.
