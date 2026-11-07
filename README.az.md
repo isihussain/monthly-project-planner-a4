@@ -83,6 +83,12 @@ Parametrlərlə açmaq olar:
 
 ---
 
+## 🔗 Əlaqəli Layihələr
+
+- **[İT Layihə Tapşırıq və Kritiklik Matrisi (A4 Çap)](https://github.com/isihussain/it-task-matrix-a4)** — Frontend və Admin & Backend işləri üçün minimalist, 4 dilli, A4 qara-ağ çap edilə bilən tapşırıq və kritiklik izləmə şablonu. [Canlı Demo](https://isihussain.github.io/it-task-matrix-a4/)
+
+---
+
 ## Töhfə Vermək
 
 Yeni dillər əlavə edə, çap stillərini təkmilləşdirə və ya xətaları bildirə bilərsiniz. Ətraflı məlumat üçün [CONTRIBUTING.md](CONTRIBUTING.md) faylını oxuyun.
