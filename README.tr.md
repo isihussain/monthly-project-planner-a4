@@ -89,6 +89,12 @@ Doğrudan dil veya görünüm parametresiyle açabilirsiniz:
 
 ---
 
+## 🔗 İlgili Projeler
+
+- **[IT Proje Görev & Kritiklik Matrisi (A4 Baskı)](https://github.com/isihussain/it-task-matrix-a4)** — Frontend ve Admin & Backend işleri için minimalist, 4 dilli, A4 siyah-beyaz yazdırılabilir görev ve kritiklik takip şablonu. [Canlı Demo](https://isihussain.github.io/it-task-matrix-a4/)
+
+---
+
 ## Katkıda Bulunma
 
 Yeni diller ekleyebilir, yazdırma stillerini geliştirebilir veya hata bildiriminde bulunabilirsiniz. Katkı kuralları için [CONTRIBUTING.md](CONTRIBUTING.md) dosyasına göz atabilirsiniz.
