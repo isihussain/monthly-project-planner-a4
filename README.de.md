@@ -71,3 +71,13 @@ Parameter können über die URL übergeben werden:
 ## Lizenz
 
 Dieses Projekt ist unter der [MIT-Lizenz](LICENSE) lizenziert.
+
+---
+
+## 🔗 Verwandte Projekte
+
+- **[IT-Projektaufgaben & Kritikalitätsmatrix (Druckbares A4)](https://github.com/isihussain/it-task-matrix-a4)** — Minimalistische, tintenfreundliche A4-Vorlage für Frontend- und Backend-Teams in 4 Sprachen. [Live Demo](https://isihussain.github.io/it-task-matrix-a4/)
+
+---
+
+## Beitragen
