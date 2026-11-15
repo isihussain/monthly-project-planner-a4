@@ -312,6 +312,9 @@
     if (!container) return;
     const cells = container.getElementsByClassName('cal-cell');
 
+    const now = new Date();
+    const todayKey = formatDateKey(now.getFullYear(), now.getMonth() + 1, now.getDate());
+
     for (let i = 0; i < 42; i++) {
       const cell = cells[i];
       if (!cell) continue;
@@ -323,6 +326,12 @@
         const dateKey = formatDateKey(year, month, dayNumber);
         cell.dataset.dateKey = dateKey;
         cell.style.opacity = '1';
+
+        if (dateKey === todayKey) {
+          cell.classList.add('is-today');
+        } else {
+          cell.classList.remove('is-today');
+        }
 
         if (badge) {
           badge.textContent = String(dayNumber);
@@ -339,6 +348,7 @@
         });
       } else {
         cell.removeAttribute('dateKey');
+        cell.classList.remove('is-today');
         cell.style.opacity = '0.3';
         if (badge) {
           badge.textContent = '';
@@ -389,6 +399,7 @@
     setElemText('lblSave', t.save);
     setElemText('lblExport', t.export);
     setElemText('lblImport', t.import);
+    setElemText('btnToday', t.today || 'Bugün');
 
     const btnPrev = document.getElementById('btnPrevMonth');
     if (btnPrev) btnPrev.title = t.prevMonth;
@@ -660,6 +671,16 @@
     showToast(`${t.monthsSelect[m - 1]} ${y}`);
   }
 
+  function goToToday() {
+    const now = new Date();
+    state.year = now.getFullYear();
+    state.month = now.getMonth() + 1;
+    updateCalendar();
+    scheduleAutoSave();
+    const t = I18N[state.lang] || I18N.tr;
+    showToast(`${t.today || 'Bugün'}: ${t.monthsSelect[state.month - 1]} ${state.year}`);
+  }
+
   function clearDateBadges() {
     document.querySelectorAll('.cal-date-badge').forEach(b => {
       b.textContent = '';
@@ -878,6 +899,7 @@
   window.setLanguage = setLanguage;
   window.switchOrientation = switchOrientation;
   window.changeMonth = changeMonth;
+  window.goToToday = goToToday;
   window.clearNumbers = clearDateBadges;
   window.populateSampleData = function () {
     loadSampleData(state.lang);

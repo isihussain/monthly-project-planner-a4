@@ -373,6 +373,17 @@ body {
   background: #fafafa;
 }
 
+.cal-cell.is-today {
+  background: #f8fafc;
+}
+
+.cal-cell.is-today .cal-date-badge {
+  background-color: #000000;
+  color: #ffffff;
+  border: 1.2px solid #000000;
+  font-weight: 900;
+}
+
 .cal-cell-header {
   display: flex;
   justify-content: space-between;
@@ -647,6 +658,17 @@ body {
   .toolbar,
   .toast {
     display: none !important;
+  }
+
+  .cal-cell.is-today {
+    background: transparent !important;
+  }
+
+  .cal-cell.is-today .cal-date-badge {
+    background-color: transparent !important;
+    color: #000000 !important;
+    box-shadow: 0 0 0 1px #000000 inset !important;
+    border: 1.5px solid #000000 !important;
   }
 
   .sheet-wrapper {
