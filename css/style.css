@@ -643,6 +643,87 @@ body {
 }
 
 /* =========================================================
+   KISAYOLLAR MODAL DIALOG
+   ========================================================= */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.modal-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-card {
+  background: #ffffff;
+  border: 2px solid #000000;
+  border-radius: 6px;
+  padding: 14px 18px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1.5px solid #000000;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+
+.modal-header h3 {
+  font-size: 12.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: 800;
+  line-height: 1;
+  padding: 2px 4px;
+}
+
+.shortcuts-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.shortcuts-table td {
+  padding: 5px 3px;
+  border-bottom: 1px dotted var(--line-rule);
+}
+
+.shortcuts-table kbd {
+  background: #f3f4f6;
+  border: 1px solid #000000;
+  border-radius: 3px;
+  padding: 1.5px 5px;
+  font-size: 10px;
+  font-family: inherit;
+  font-weight: 700;
+}
+
+/* =========================================================
    YAZDIRMA (PRINT) ÖZEL STİLLERİ
    ========================================================= */
 @media print {
@@ -656,7 +737,8 @@ body {
   }
 
   .toolbar,
-  .toast {
+  .toast,
+  .modal-backdrop {
     display: none !important;
   }
 
