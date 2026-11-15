@@ -55,6 +55,9 @@
       <button class="btn" onclick="savePlanToStorage(true)">
         <span>💾</span> <span id="lblSave">Kaydet</span>
       </button>
+      <button class="btn" id="btnShortcuts" onclick="toggleShortcutsModal()" title="Klavye Kısayolları">
+        <span>⌨️</span> <span id="lblShortcuts">Kısayollar</span>
+      </button>
       <button class="btn" onclick="exportPlanJson()">
         <span>⬇️</span> <span id="lblExport">Dışa Aktar</span>
       </button>
@@ -219,6 +222,19 @@
     </article>
 
   </main>
+
+  <!-- KISAYOLLAR MODAL PENCERESİ -->
+  <div id="shortcutsModal" class="modal-backdrop" onclick="if(event.target===this) toggleShortcutsModal(false)" role="dialog" aria-modal="true" aria-labelledby="lblShortcutsTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="lblShortcutsTitle">Klavye Kısayolları</h3>
+        <button class="modal-close-btn" onclick="toggleShortcutsModal(false)" aria-label="Close">✕</button>
+      </div>
+      <table class="shortcuts-table">
+        <tbody id="shortcutsTableBody"></tbody>
+      </table>
+    </div>
+  </div>
 
   <div id="toastNotification" class="toast" role="status" aria-live="polite">Plan kaydedildi</div>
 

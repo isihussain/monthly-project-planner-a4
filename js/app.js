@@ -397,9 +397,12 @@
     setElemText('lblReset', t.reset);
     setElemText('lblPrint', t.print);
     setElemText('lblSave', t.save);
+    setElemText('lblShortcuts', t.shortcutsTitle || 'Kısayollar');
     setElemText('lblExport', t.export);
     setElemText('lblImport', t.import);
     setElemText('btnToday', t.today || 'Bugün');
+
+    renderShortcutsModal();
 
     const btnPrev = document.getElementById('btnPrevMonth');
     if (btnPrev) btnPrev.title = t.prevMonth;
@@ -693,6 +696,34 @@
     showToast('Tarihler temizlendi (elle yazmaya uygun)');
   }
 
+  function renderShortcutsModal() {
+    const t = I18N[state.lang] || I18N.tr;
+    const titleEl = document.getElementById('lblShortcutsTitle');
+    if (titleEl) titleEl.textContent = t.shortcutsTitle || 'Klavye Kısayolları';
+    const tbody = document.getElementById('shortcutsTableBody');
+    if (tbody && Array.isArray(t.shortcutsList)) {
+      tbody.innerHTML = t.shortcutsList.map(s => `
+        <tr>
+          <td style="width: 140px;"><kbd>${escapeHtml(s.key)}</kbd></td>
+          <td>${escapeHtml(s.desc)}</td>
+        </tr>
+      `).join('');
+    }
+  }
+
+  function toggleShortcutsModal(forceState) {
+    const modal = document.getElementById('shortcutsModal');
+    if (!modal) return;
+    const isOpen = modal.classList.contains('open');
+    const shouldOpen = forceState !== undefined ? forceState : !isOpen;
+    if (shouldOpen) {
+      renderShortcutsModal();
+      modal.classList.add('open');
+    } else {
+      modal.classList.remove('open');
+    }
+  }
+
   // =========================================================
   // JSON EXPORT & IMPORT
   // =========================================================
@@ -832,11 +863,24 @@
       }
     });
 
-    // Keyboard Shortcuts (Ctrl/Cmd + S to save, Ctrl/Cmd + P to print)
+    // Keyboard Shortcuts (Ctrl/Cmd + S to save, ? for shortcuts, Esc to close)
     document.addEventListener('keydown', function (e) {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
         e.preventDefault();
         saveToStorage(true);
+        return;
+      }
+
+      if (e.key === 'Escape') {
+        toggleShortcutsModal(false);
+        return;
+      }
+
+      const activeEl = document.activeElement;
+      const isEditing = activeEl && (activeEl.isContentEditable || activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA');
+      if (e.key === '?' && !isEditing) {
+        e.preventDefault();
+        toggleShortcutsModal();
       }
     });
 
@@ -900,6 +944,7 @@
   window.switchOrientation = switchOrientation;
   window.changeMonth = changeMonth;
   window.goToToday = goToToday;
+  window.toggleShortcutsModal = toggleShortcutsModal;
   window.clearNumbers = clearDateBadges;
   window.populateSampleData = function () {
     loadSampleData(state.lang);
