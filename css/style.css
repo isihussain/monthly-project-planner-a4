@@ -4,6 +4,8 @@
    ========================================================= */
 
 :root {
+  --font-sans: "Medeo Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "Medeo Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --ink-black: #000000;
   --ink-dark: #222222;
   --ink-mid: #666666;
@@ -22,7 +24,7 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--font-sans);
   background-color: var(--bg-app);
   color: var(--ink-black);
   line-height: 1.25;
@@ -786,4 +788,10 @@ body {
 @page {
   size: A4 portrait;
   margin: 8mm 9mm;
+}
+
+
+/* Medeo Mono tabular numerals for print precision */
+.day-num, .cal-date, .keyboard-shortcut kbd {
+  font-family: var(--font-mono);
 }
